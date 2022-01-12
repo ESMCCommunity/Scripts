@@ -1,42 +1,98 @@
-options:
-    version: 1.0
+#————————————————————————————————————————————————————————————————————————————
+
+#_________                     _______   _         _____   ____________
+#|________| ____________      / ______\ | |       / ___ \ |____   _____|
+#| |        |_________  |    / /        | |      | /   \ |     | |
+#| |_______          / /    | /         | |___   | |___| |     | |
+#| _______|       __/ /     | |         |  __ \  | ____  |     | |
+#| |             /  /       | \         | |  \ \ | |   | |     | |
+#| |______  ____/ /____      \ \_______ | |  | | | |   | |     | |
+#|________| |__________|      \_______/ |_|  |_| |_|   | |     |_|
+
+#————————————————————————————————————————————————————————————————————————————
+
+# Permissions:
+# - esmc.chat
+
 
 variables:
-    {chat} = true
+	{chat} = true
+	{language} = english
+options:
+	version: 2.0-REV
+	
+	# POLISH LANGUAGE
+	
+	msg1PL: &eUzyj komendy &f/chat <on/off/c>
+	chatoffPL: &b&lChat | &eChat jest obecnie &cwylaczony
+	chatoffmsg1PL: &b&lChat | &eChat zostal &cwylaczony &eprzez &6%player%
+	chatonPL: &b&lChat | &eChat zostal &awlaczony &bprzez &3%player%
+	chatclearPL: &b&lChat | &eChat zostal wyczyszczony przez &6%player%
+	
+	# ENGLISH LANGUAGE
+	
+	msg1EN: &eUse command &f/chat <on/off/c>
+	chatoffEN: &b&lChat | &eChat is now &coff
+	chatoffmsg1EN: &b&lChat | &eChat has turned off by &6%player%
+	chatonEN: &b&lChat | &eChat has turned on by &6%player%
+	chatclearEN: &b&lChat | &eChat has been cleared by &6%player%
 
 command /chat [<text>]:
-    permission: ezchat.admin
-    permission message: &6Chat &7┃&c Insufficient permission.
-    trigger:
-        arg is not set:
-            send "&6Chat &7┃&7 Usage: &c/chat cc, /chat on, /chat off"
-        arg is "on":
-            {chat is false}:
-            set {chat} to true
-            broadcast "&6Chat &7┃&e Chat has been enabled by: &b%player%&e!"
-        arg is "off":
-            set {chat} to false
-            broadcast "&6Chat &7┃&e Chat has been disabled by: &b%player%&e!"
-        arg is "cc":
-            loop 100 times:
-                broadcast ""
-            broadcast "&6Chat &7┃ &eChat has been cleared by: &b%player%"
-
+	aliases: c
+	trigger:
+		if arg 1 is not set:
+			if {language} is "polish":
+				send " {@msg1PL}"
+			if {language} is "english":
+				send " {@msg1EN}"
+				
+		if arg 1 is "off":
+			set {chat} to false
+			if {language} is "polish":
+				broadcast " {@chatoffmsg1PL}"
+			if {language} is "english":
+				send " {@chatoffmsg1EN}"
+			
+		if arg 1 is "on":
+			set {chat} to true
+			if {language} is "polish":
+				broadcast " {@chatonPL}"
+			if {language} is "english":
+				broadcast " {@chatonEN}"
+			
+		if arg 1 is "c" or "clear":
+			loop 100 times:
+				broadcast " "
+			if {language} is "polish":
+				broadcast " {@chatclearPL}"
+			if {language} is "english":
+				broadcast " {@chatclearEN}"
+			
 on chat:
-        if {chat} is false:
-                if player has permission "ezchat.chat":
-                        stop
-                else:
-                        cancel event
-                        send "&6Chat &7┃&c Chat has been disabled!"
-                        stop
-
-
-
-
-command /ezchat:
-    trigger:
-        send "&7=====================" to player
-        send "&aEzChat by &eESMC Team!" to player
-        send "&aversion: {@version}" to player
-        send "&7=====================" to player
+	if {chat} is false:
+		if player doesn't have permission "esmc.chat":
+			{language} is "polish":
+				send " {@chatoffPL}"	
+			{language} is "english":
+				send " {@chatoffEN}"
+			cancel event
+		
+command /ezchatmanager:
+	aliases: ezcm, ecm, ezchat
+	trigger:
+		send " &7&l»———————————————[&bCHAT&7&l]———————————————«"
+		send " &7&l» &eEzChatManager &7» &eESMC Skript Team"
+		send " &7&l» &eVersion &7» &e{@version}"
+		send " &7&l»———————————————[&bCHAT&7&l]———————————————«"
+		
+command /ecmlanguage [<text>]:
+	aliases: ezchatlanguage, ezlang, eclang, ezchatmanagerlanguage
+	trigger:
+		if arg 1 is not set:
+			send " &b&lChat | &eAvaible languages: &cPL &7(&ePolish&7), &1EN &7(&eEnglish&7)"
+		if arg 1 is "en" or "EN":
+			set {language} to "english"
+			send " &b&lChat | &aYou have set the language to &6ENGLISH"
+		if arg 1 is "pl":
+			set {language} to "polish"
+			send " &b&lChat | &aUstawiles jezyk na &6POLSKI"
