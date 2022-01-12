@@ -1,0 +1,26 @@
+# EZHelpop by ESMC.PL Development Team,
+# Do not sell this plugin without our permission!
+
+options:
+        version: 1.1.1 # Don't change the version, haha!
+
+command /helpop [<text>]:
+	trigger:
+		if arg 1 is not set:
+			message "&7[&cHelpOP&7] &c&l→ &aPlease enter your message."
+			stop
+		message "&7[&cHelpOP&7] &c&l→ &aYour message has been sent!"
+		send player title "" with subtitle "&e☆ Your message have been sent! ☆"  for 5 seconds # SKRAYFALL
+		if arg 1 is set:
+			loop all players:
+				loop-player has permission "ezhelpop.admin": # change ezhelpop.admin to whatever you want
+					message "" to loop-player
+					message "&7[&cHelpOP&7] &7%player%&7: %arg 1%" to loop-player
+					message "" to loop-player
+
+command /ezhelpop:
+    trigger:
+        send "&7&l==========&c&lHelpOp&7&l=========="
+        send "&aezHelpOP by &cesmc.pl &eteam!"
+        send "&eVersion: {@version}"
+        send "&7&l==========&c&lHelpOp&7&l=========="
