@@ -93,6 +93,6 @@ command /ecmlanguage [<text>]:
 		if arg 1 is "en" or "EN":
 			set {language} to "english"
 			send " &b&lChat | &aYou have set the language to &6ENGLISH"
-		if arg 1 is "pl":
+		if arg 1 is "pl" or "PL":
 			set {language} to "polish"
 			send " &b&lChat | &aUstawiles jezyk na &6POLSKI"
