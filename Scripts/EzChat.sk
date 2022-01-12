@@ -1,0 +1,42 @@
+options:
+    version: 1.0
+
+variables:
+    {chat} = true
+
+command /chat [<text>]:
+    permission: ezchat.admin
+    permission message: &6Chat &7┃&c Insufficient permission.
+    trigger:
+        arg is not set:
+            send "&6Chat &7┃&7 Usage: &c/chat cc, /chat on, /chat off"
+        arg is "on":
+            {chat is false}:
+            set {chat} to true
+            broadcast "&6Chat &7┃&e Chat has been enabled by: &b%player%&e!"
+        arg is "off":
+            set {chat} to false
+            broadcast "&6Chat &7┃&e Chat has been disabled by: &b%player%&e!"
+        arg is "cc":
+            loop 100 times:
+                broadcast ""
+            broadcast "&6Chat &7┃ &eChat has been cleared by: &b%player%"
+
+on chat:
+        if {chat} is false:
+                if player has permission "ezchat.chat":
+                        stop
+                else:
+                        cancel event
+                        send "&6Chat &7┃&c Chat has been disabled!"
+                        stop
+
+
+
+
+command /ezchat:
+    trigger:
+        send "&7=====================" to player
+        send "&aEzChat by &eESMC Team!" to player
+        send "&aversion: {@version}" to player
+        send "&7=====================" to player
