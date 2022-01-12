@@ -1,0 +1,18 @@
+# EZPluginHider by ESMC.PL Development Team.
+# Do not sell this skript without our permission!
+# # - means a comment.
+
+# Please rate the plugin, it helps! Thanks!
+
+options:
+    version: 3.0
+    nopermission: &cInsufficient permission. # No permission message - You can change this to everything you want.
+    permission: EzPlugins.Bypass # Permission to view plugins.
+
+command /plugins:
+    aliases: /pl, /icanhasbukkit, /ver, /version, /?, /help, /about, /bukkit:help, /bukkit:version, /bukkit:ver, /bukkit:about, /bukkit:?, /bukkit:pl, /bukkit:plugins, /bukkit:icanhasbukkit, //eval, //evaluate, //calc, //calculate	
+    trigger:
+        if player doesn't have permission "{@permission}":
+        send "&7[&2Plugins&7] {@nopermission}" to player
+#        send player title "" with subtitle "{@nopermission}" for 5 seconds # Remove the first letter(#), if you want to send title to a player. SkRayfall needed!
+        cancel event
