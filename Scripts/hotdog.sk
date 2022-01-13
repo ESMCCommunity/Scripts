@@ -1,0 +1,203 @@
+#  _    _  ____ _______ _____   ____   _____ 
+# | |  | |/ __ \__   __|  __ \ / __ \ / ____|
+# | |__| | |  | | | |  | |  | | |  | | |  __ 
+# |  __  | |  | | | |  | |  | | |  | | | |_ |
+# | |  | | |__| | | |  | |__| | |__| | |__| |
+# |_|  |_|\____/  |_|  |_____/ \____/ \_____|
+
+# Stworzone na potrzeby ESMC.PL @ 2022!
+# ESMC.PL @ https://github.com/ESMCCommunity
+# 13.01.22
+# Wersja angielska wkrótce...
+
+
+# Opcje
+options:
+        # OGÓLNE
+        permission: hotdog.ac
+        version: 1.0-HD
+        language: polish
+        macromax: 16
+        # WIADOMOŚCI
+        AutoClickerMessage: &cHotDog ┃ AutoClicker
+        AutoClickerMessageOP: &cHotDog ┃ %player% - AutoClicker: &f{macro.%player%}
+        AntiSneak: &cHotDog ┃ AntiSneak 
+        AntiSneakOP: &cHotDog ┃ %player% - AntiSneak
+        AntiFlySpeed: &cHotDog ┃ Fly, bądź speed
+        AntiFlySpeedOP: &cHotDog ┃ %player% - Fly, bądź speed
+        AntiAura: &cHotDog ┃ KillAura
+        AntiAuraOP: &cHotDog ┃ %player% - KillAura
+        AntiReach: &cHotDog ┃ Reach
+        AntiReachOP: &cHotDog ┃ %player% - Reach
+        hdmessage: &cHotDog ┃ Ten serwer jest zabezpieczony anticheatem w .sk, HotDog!
+
+# Zmienne
+variables:
+        {macro.%player%} = 0
+
+# MODUŁ: AUTOAKTUALIZATOR
+on load:
+    send "&cHotDog ┃ Sprawdzanie pod względem aktualizacji.." to console
+    if text from "https://raw.githubusercontent.com/ESMCCommunity/Scripts/main/Scripts/hotdogversion" is not "{@version}":
+        send "&cHotDog ┃ Nowa aktualizacja dostępna!" to console
+    else: 
+        send "&cHotDog ┃ Brak aktualizacji. ({@version})" to console
+on join:
+    if player is op:
+        if text from "https://raw.githubusercontent.com/ESMCCommunity/Scripts/main/Scripts/hotdogversion" is not "{@version}":
+            send "&cHotDog ┃ Nowa aktualizacja dostępna! <link:https://www.spigotmc.org/resources/>&cKliknij!" to player
+
+
+# MODUŁ: AutoClicker
+
+on leftclick:
+        {autoclickercheat} is true:
+                add 1 to {macro.%player%}
+                if {macro.%player%} >= {@macromax}
+        		            kick the player due to "{AutoClickerMessage}"
+                        send "{AutoClickerMessageOP}" to ops
+every 1 second:
+	loop all players:
+		clear {macro.%loop-player%}
+
+# MODUŁ: AutoSneak
+on chat:
+        if player is sneaking:
+                kick the player due to "{AntiSneak}"
+                send "{AntiSneakOP}" to ops
+
+on inventory open:
+         if player is sneaking:
+                kick the player due to "{AntiSneak}"
+                send "{AntiSneakOP}" to ops
+
+on sign change:
+        if player is snekaing:
+                kick the player due to "{AntiSneak}"
+                send "{AntiSneakOP}" to ops
+
+# MODUŁ: Reach
+on damage:
+        if attacker is a player:
+                if victim is a player:
+                        if attacker's gamemode is survival or adventure:     
+                                set {_reach} to distance between attacker and victim
+                                if {_reach} is greater than 4:
+                                        add 1 to {alert.reach.%attacker%}
+                                        loop all players:
+                                                if loop-player has the permission "{@permission}":
+                                                send message "{AntiReachOP}" to loop-player
+                                                if {alert.reach.%attacker%} = 1:
+                                                        kick the attacker due to "{AntiReach}"
+                                                        send "{AntiReachOP}" to ops
+
+# MODUŁ: Speed | Fly
+on any move:
+  player is not flying
+  player's gamemode is not creative
+  block below player is not air:
+    set {fly.%player%} to 0
+    stop
+  else:
+    block north below player is air
+    block south below player is air
+    block west below player is air
+    block east below player is air
+    block north east below player is air
+    block south east below player is air
+    block north west below player is air
+    block south west below player is air
+    the gliding state of player is true:
+      player's chestplate is elytra:
+        stop
+        set {fly.%player%} to 0
+      else:
+        set {ylocation.%player%} to the y location of player
+        wait 2 seconds
+        set {ylocation2.%player%} to the y location of player
+        wait 1 tick
+        if difference between {ylocation.%player%} and {ylocation2.%player%} = 0:
+          add 1 to {fly.%player%}
+          if {fly.%player%} > 3:
+            kick the player due to "{AntiFlySpeed}"
+            send "{AntiFlySpeedOP}" to ops
+
+every 10 seconds:
+  loop all players:
+    set {fly.%loop-player%} to 0
+
+on death:
+  set {fly.%player%} to 0
+
+# MODUŁ: KillAura
+
+every 4 seconds:
+	set {check} to true
+	wait 1 second
+	set {check} to false
+	loop all players:
+		delete {click.%loop-player%}
+on left click:
+	{check} is true
+	add 1 to {click.%player%}
+	{click.%player%} > 24
+	kick the player due to "{KillAura}"
+on leftclick:
+	add 1 to {click.%player%}
+	if {click.%player%} >= 30:
+		cancel event
+
+
+
+# KOMENDY TUTAJ
+
+command /hotdog [<text>] [<text>] [<text>]:
+        trigger:
+                if arg 1 is not set:
+                        send " &c/hd status"
+                        send " &c/hd cheat"
+                        
+                if arg 1 is "status":
+                        send "&7&m»———————————————[&cHotDog&7&m]———————————————«"
+                        send " &7&l» &eAutoClicker &7» &eStatus: &6%{autoclickercheat}%"
+                        send " &7&l» &eAutoSneak &7» &eStatus: &6%{autosneakcheat}%"
+                        send " &7&l» &eReach &7» &eStatus: &6%{reachcheat}%"
+                        send " &7&l» &eFlight &7» &eStatus: &6%{flycheat}%"
+                        send "&7&m»———————————————[&cHotDog&7&m]———————————————«"
+                        
+                if arg 1 is "cheat":
+                        if arg 2 is "autoclicker":
+                                if arg 3 is "off":
+                                        set {autoclickercheat} to false
+                                if arg 3 is "on":
+                                        set {autoclickercheat} to true
+                                
+                        if arg 2 is "fly" or "flight":
+                                if arg 3 is "off":
+                                        set {flycheat} to false
+                                if arg 3 is "on":
+                                        set {flycheat} to true
+
+                        if arg 2 is "autosneak":
+                                if arg 3 is "off":
+                                        set {autosneakcheat} to fasle
+                                if arg 3 is "on":
+                                        set {autosneakcheat} to true
+
+                        if arg 2 is "reach":
+                                if arg 3 is "off":
+                                        set {reachcheat} to false
+                                if arg 3 is "on":
+                                        set {reachcheat} to true
+
+                        if arg 2 is "killaura" or "aura":
+                                if arg 3 is "off":
+                                        set {killauracheat} to false
+                                if arg 3 is "on":
+                                        set {killauracheat} to true                                
+
+
+command /ncp
+        aliases: aac, aac5, spartan, hd, jd, jp2, kremowka, wadowice, 2137, alice, vulcan, ge, godseye, negativity
+        trigger:
+                send "{@hdmessage}"

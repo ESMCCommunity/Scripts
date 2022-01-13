@@ -8,6 +8,7 @@ Coming soon:
 # EzBedWars
 # EzHypixel
 # EzDeathRun
-# ez
+# EzCars
+# And a lot more of minigames!!, we will also remake paid plugins..
 
 Please report bugs in "Issues" section.
