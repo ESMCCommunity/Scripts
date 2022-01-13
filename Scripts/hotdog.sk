@@ -156,6 +156,8 @@ on leftclick:
 # COMMANDS HERE
 
 command /hotdog [<text>] [<text>] [<text>]:
+        permission: {@permission}
+        permission message: "&cHotDog | No permission!"
         trigger:
                 if arg 1 is not set:
                         send " &c/hd status"
