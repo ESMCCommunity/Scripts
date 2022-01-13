@@ -6,30 +6,30 @@
 # |_|  |_|\____/  |_|  |_____/ \____/ \_____|
 
 # Stworzone na potrzeby ESMC.PL @ 2022!
-# ESMC.PL @ https://github.com/ESMCCommunity
+# ESMC.PL/hotdog.html @ https://github.com/ESMCCommunity
 # 13.01.22
-# Wersja angielska wkrótce...
 
 
 # Opcje
 options:
-        # OGÓLNE
+        # GLOBAL
         permission: hotdog.ac
-        version: 1.0-HD
+        version: 1.1-ENGLISH
         language: polish
         macromax: 16
-        # WIADOMOŚCI
+
+        # POLISH
         AutoClickerMessage: &cHotDog ┃ AutoClicker
         AutoClickerMessageOP: &cHotDog ┃ %player% - AutoClicker: &f{macro.%player%}
-        AntiSneak: &cHotDog ┃ AntiSneak 
+        AntiSneak: &cHotDog ┃ AntiSneak
         AntiSneakOP: &cHotDog ┃ %player% - AntiSneak
-        AntiFlySpeed: &cHotDog ┃ Fly, bądź speed
-        AntiFlySpeedOP: &cHotDog ┃ %player% - Fly, bądź speed
+        AntiFlySpeed: &cHotDog ┃ Fly/Speed
+        AntiFlySpeedOP: &cHotDog ┃ %player% - Fly/Speed
         AntiAura: &cHotDog ┃ KillAura
         AntiAuraOP: &cHotDog ┃ %player% - KillAura
         AntiReach: &cHotDog ┃ Reach
         AntiReachOP: &cHotDog ┃ %player% - Reach
-        hdmessage: &cHotDog ┃ Ten serwer jest zabezpieczony anticheatem w .sk, HotDog!
+        hdmessage: &cHotDog ┃ Hardcoded by ESMC.PL!
 
 # Zmienne
 variables:
@@ -37,18 +37,22 @@ variables:
 
 # MODUŁ: AUTOAKTUALIZATOR
 on load:
-    send "&cHotDog ┃ Sprawdzanie pod względem aktualizacji.." to console
-    if text from "https://raw.githubusercontent.com/ESMCCommunity/Scripts/main/Scripts/hotdogversion" is not "{@version}":
-        send "&cHotDog ┃ Nowa aktualizacja dostępna!" to console
-    else: 
-        send "&cHotDog ┃ Brak aktualizacji. ({@version})" to console
+    if {language} is "polish":
+      send "&cHotDog ┃ Sprawdzanie pod względem aktualizacji.." to console
+      if text from "https://raw.githubusercontent.com/ESMCCommunity/Scripts/main/Scripts/hotdogversion" is not "{@version}":
+          send "&cHotDog ┃ Update!" to console
+    if {language} is "english":
+      send "&cHotDog ┃ Checking for updates.." to console
+      if text from "https://raw.githubusercontent.com/ESMCCommunity/Scripts/main/Scripts/hotdogversion" is not "{@version}":
+          send "&cHotDog ┃ Update!" to console
+
 on join:
     if player is op:
         if text from "https://raw.githubusercontent.com/ESMCCommunity/Scripts/main/Scripts/hotdogversion" is not "{@version}":
-            send "&cHotDog ┃ Nowa aktualizacja dostępna! <link:https://www.spigotmc.org/resources/>&cKliknij!" to player
+            send "&cHotDog ┃ Update! <link:https://www.spigotmc.org/resources/hotdog.99174/>&cClick!" to player
 
 
-# MODUŁ: AutoClicker
+# AutoClicker
 
 on leftclick:
         {autoclickercheat} is true:
@@ -60,7 +64,7 @@ every 1 second:
 	loop all players:
 		clear {macro.%loop-player%}
 
-# MODUŁ: AutoSneak
+# AutoSneak
 on chat:
         if player is sneaking:
                 kick the player due to "{AntiSneak}"
@@ -76,7 +80,7 @@ on sign change:
                 kick the player due to "{AntiSneak}"
                 send "{AntiSneakOP}" to ops
 
-# MODUŁ: Reach
+# Reach
 on damage:
         if attacker is a player:
                 if victim is a player:
@@ -91,7 +95,7 @@ on damage:
                                                         kick the attacker due to "{AntiReach}"
                                                         send "{AntiReachOP}" to ops
 
-# MODUŁ: Speed | Fly
+# Speed | Fly
 on any move:
   player is not flying
   player's gamemode is not creative
@@ -129,7 +133,7 @@ every 10 seconds:
 on death:
   set {fly.%player%} to 0
 
-# MODUŁ: KillAura
+# KillAura
 
 every 4 seconds:
 	set {check} to true
@@ -137,7 +141,7 @@ every 4 seconds:
 	set {check} to false
 	loop all players:
 		delete {click.%loop-player%}
-on left click:
+on leftclick:
 	{check} is true
 	add 1 to {click.%player%}
 	{click.%player%} > 24
@@ -149,7 +153,7 @@ on leftclick:
 
 
 
-# KOMENDY TUTAJ
+# COMMANDS HERE
 
 command /hotdog [<text>] [<text>] [<text>]:
         trigger:
@@ -200,4 +204,4 @@ command /hotdog [<text>] [<text>] [<text>]:
 command /ncp
         aliases: aac, aac5, spartan, hd, jd, jp2, kremowka, wadowice, 2137, alice, vulcan, ge, godseye, negativity
         trigger:
-                send "{@hdmessage}"
+                send "{@hdmessage}" 
